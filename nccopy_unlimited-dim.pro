@@ -1,18 +1,35 @@
-PRO nccopy_unlimited-dim
+PRO nccopy_rm_unlimited, infile, outfile
 
-; original path and file name
-path_in='/home/kshaffe5/research/data_files'
-file_in='/DIMG.base170116195242.2DS.V.cdf'
+;----------------------------------------------
+;
+;This procedure is designed to take a netcdf input file and make a copy 
+;of that and make an output file with the unlimited dimension removed.
+;
+;USAGE: nccopy_unlimited-dim, infile, outfile
+;
+;ARGUMENTS: 
+;       infile - a string that contains the path and file name of the 
+;                original netcdf file
+;       outfile - a string that contains the path and file name of the
+;                new netcdf file
+;
+;
+;----------------------------------------------
 
-; path and file name for new file
-path_out='/home/kshaffe5/research/new_data_files'
-file_out=file_in
+IF NOT file_test(infile) Then Begin
+  Print, 'Input File Invalid: ', infile
+  Return
+ENDIF
 
+If (n_elements(outfile) EQ 0) Then Begin
+  Print, 'No Outfile Given'
+  Return
+Endif
 ; create a new netcdf file
-ncid_out=ncdf_create(path_out+file_out,/Clobber, /NETCDF4_FORMAT)
+ncid_out=ncdf_create(outfile,/Clobber, /NETCDF4_FORMAT)
 
 ; open the original file to be copied
-ncid_in=ncdf_open(path_in+file_in,/NOWRITE)
+ncid_in=ncdf_open(infile,/NOWRITE)
 
 ;get information about the original file
 info = ncdf_inquire(ncid_in)
